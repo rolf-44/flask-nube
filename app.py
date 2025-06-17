@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def inicio():
-    return "¡Hola desde PythonAnywhere!"
+    return "¡Hola desde Flask desplegado en Railway!"
 
 @app.route("/hola")
 def saludo():
