@@ -18,32 +18,33 @@ def get_connection():
 
 # Ruta 1: Obtener información del socio
 @app.route("/api/socio/<int:numSocio>")
-def obtener_socio(numsocio):
+def obtener_socio(numSocio):
     try:
         conn = get_connection()
-        cursor = conn.cursor(directory=True)
+        cursor = conn.cursor(dictionary=True)
 
         cursor.execute("""
             SELECT 
-                s.numsocio, 
+                s.numSocio, 
                 s.nombre, 
                 s.fechaVto, 
                 s.numCuota, 
                 s.precioEsp,
-                s.precio
+                s.precio,
                 c.precio as preCuota, 
-                c.tipoprecio,
+                c.tipoPrecio,
                 c.sesiones,
                 c.semanas,
                 c.meses    
             FROM Socios s
-            JOIN Cuotas c ON s.numCuota=c.numCuota) 
-            WHERE numSocio = %s
+            JOIN Cuotas c ON s.numCuota=c.numCuota 
+            WHERE s.numSocio = %s
             ORDER BY s.fechaVto DESC LIMIT 1
         """, (numSocio,))
 
         socio = cursor.fetchone()
         cursor.close()
+        conn.close()
 
         if socio:
             return jsonify(socio)
