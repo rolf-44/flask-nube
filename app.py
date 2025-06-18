@@ -16,6 +16,10 @@ DB_REMOTE = {
 def get_connection():
     return mysql.connector.connect(**DB_REMOTE)
 
+@app.route("/debug")
+def debug():
+    return jsonify({Status": "Esta app está activa})
+
 # Ruta 1: Obtener información del socio
 @app.route("/api/socio/<int:numSocio>")
 def obtener_socio(numSocio):
