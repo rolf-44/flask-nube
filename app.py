@@ -16,9 +16,13 @@ DB_REMOTE = {
 def get_connection():
     return mysql.connector.connect(**DB_REMOTE)
 
+@app.route("/")
+def home():
+    retorn jsonify({"message": "Flask funciona correctamente desde Railway"})
+
 @app.route("/debug")
 def debug():
-    return jsonify({Status": "Esta app está activa})
+    return jsonify({"status": "Esta app está activa"})
 
 # Ruta 1: Obtener información del socio
 @app.route("/api/socio/<int:numSocio>")
@@ -55,7 +59,7 @@ def obtener_socio(numSocio):
         else:
             return jsonify({"error": "Socio no encontrado"})
     except Exception as e:
-        return jsonify({Eerror": f"Error al obtener datos del socio: {e})},500
+        return jsonify({"error": f"Error al obtener datos del socio: {str(e)}"}), 500
 
 def inicio():
     return "¡Hola desde Flask desplegado en Railway!"
@@ -103,4 +107,4 @@ def marcar_pagado():
     return jsonify({"mensaje": "Pago sincronizado con éxito"}), 200
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0, port=5000)")
+    app.run(host="0.0.0.0", port=5000)
