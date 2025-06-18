@@ -1,14 +1,59 @@
 from flask import Flask, jsonify, request
+import mysql.connector
+from datetime import date
 
 app = Flask(__name__)
 
-@app.route("/")
+# configuración de conexión remota (Railway)
+DB_REMOTE = {
+    "host": "mysql.railway",
+    "user": "root",
+    "password": "atIaVlkODsRRqpXsmjRHbxncuPKbshyi",
+    "database": "railway"
+}
+
+# Función auxiliar para connectar
+def get_connection():
+    return mysql.connector.connect(**DB_REMOTE)
+
+# Ruta 1: Obtener información del socio
+@app.route("/api/socio/<int:numSocio>")
+def obtener_socio(numsocio):
+    try:
+        conn = get_connection()
+        cursor = conn.cursor(directory=True)
+
+        cursor.execute("""
+            SELECT 
+                s.numsocio, 
+                s.nombre, 
+                s.fechaVto, 
+                s.numCuota, 
+                s.precioEsp,
+                s.precio
+                c.precio as preCuota, 
+                c.tipoprecio,
+                c.sesiones,
+                c.semanas,
+                c.meses    
+            FROM Socios s
+            JOIN Cuotas c ON s.numCuota=c.numCuota) 
+            WHERE numSocio = %s
+            ORDER BY s.fechaVto DESC LIMIT 1
+        """, (numSocio,))
+
+        socio = cursor.fetchone()
+        cursor.close()
+
+        if socio:
+            return jsonify(socio)
+        else:
+            return jsonify({"error": "Socio no encontrado"})
+    except Exception as e:
+        return jsonify({Eerror": f"Error al obtener datos del socio: {e})},500
+
 def inicio():
     return "¡Hola desde Flask desplegado en Railway!"
-
-@app.route("/hola")
-def saludo():
-    return "¡Esta es un ruta personalizada!"
 
 @app.route("/api/pagos_pendientes")
 def obtener_pagos():
