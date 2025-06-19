@@ -19,7 +19,7 @@ def get_connection():
 
 @app.route("/")
 def home():
-    retorn jsonify({"message": "Flask funciona correctamente desde Railway"})
+    return jsonify({"message": "Flask funciona correctamente desde Railway"})
 
 @app.route("/debug")
 def debug():
