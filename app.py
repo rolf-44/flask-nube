@@ -4,6 +4,7 @@ from datetime import date
 
 app = Flask(__name__)
 
+# estamos de pruebas
 # configuración de conexión remota (Railway)
 DB_REMOTE = {
     "host": "mysql.railway",
